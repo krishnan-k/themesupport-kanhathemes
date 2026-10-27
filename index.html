@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Krishnan | Shopify Theme & Ecommerce Developer</title>
+<meta name="description" content="Krishnan - Shopify theme developer and ecommerce website designer from Tamil Nadu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0c10; --card:#14161d; --line:#23262f; --text:#e8e9ee; --muted:#9a9fae;
+    --accent:#7c5cff; --accent2:#22d3ee;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;line-height:1.15}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  section{padding:90px 0}
+  /* NAV */
+  nav{position:sticky;top:0;z-index:10;background:rgba(11,12,16,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;justify-content:space-between;align-items:center;height:64px}
+  .logo{font-family:'Space Grotesk';font-weight:700;font-size:20px}
+  .logo span{color:var(--accent)}
+  nav ul{display:flex;gap:28px;list-style:none;font-size:14px;color:var(--muted)}
+  nav ul a:hover{color:var(--text)}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:600;font-size:15px;transition:.25s;border:0;cursor:pointer;font-family:inherit}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(124,92,255,.35)}
+  .btn-ghost{border:1px solid var(--line);color:var(--text);background:transparent}
+  .btn-ghost:hover{border-color:var(--accent)}
+  /* HERO */
+  .hero{padding:110px 0 100px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;width:520px;height:520px;right:-120px;top:-120px;
+    background:radial-gradient(circle,rgba(124,92,255,.35),transparent 65%);filter:blur(20px)}
+  .tag{display:inline-block;padding:6px 14px;border:1px solid var(--line);border-radius:99px;font-size:13px;color:var(--muted);margin-bottom:22px}
+  .tag b{color:var(--accent2)}
+  .hero h1{font-size:clamp(38px,6vw,68px);max-width:780px}
+  .hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{max-width:560px;color:var(--muted);font-size:18px;margin:22px 0 32px}
+  .hero .actions{display:flex;gap:14px;flex-wrap:wrap}
+  /* HEADINGS */
+  .eyebrow{color:var(--accent2);font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:10px}
+  .sec-title{font-size:clamp(28px,4vw,42px);margin-bottom:14px}
+  .sec-sub{color:var(--muted);max-width:560px;margin-bottom:44px}
+  /* PROJECTS */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.3s}
+  .card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+  .thumb{aspect-ratio:16/10;background:linear-gradient(135deg,#1c1f2b,#262a3a);position:relative;overflow:hidden;display:block}
+  .thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:.5s}
+  .card:hover .thumb img{transform:scale(1.04)}
+  .badge{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.7);padding:4px 12px;border-radius:99px;font-size:12px;color:#fff;z-index:2}
+  .card .body{padding:22px}
+  .card h3{font-size:20px;margin-bottom:6px}
+  .card p{color:var(--muted);font-size:14px;margin-bottom:16px}
+  .card .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+  .card .meta a{color:var(--accent2);font-weight:600}
+  /* SERVICES */
+  .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+  .svc{padding:30px;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:.3s}
+  .svc:hover{border-color:var(--accent)}
+  .svc .ico{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px}
+  .svc h3{font-size:19px;margin-bottom:8px}
+  .svc p{color:var(--muted);font-size:14px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+  .chips span{padding:8px 16px;border:1px solid var(--line);border-radius:99px;font-size:14px;color:var(--muted)}
+  /* CONTACT */
+  .contact-box{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:48px}
+  .contact-info h2{font-size:clamp(28px,4vw,38px);margin-bottom:14px}
+  .contact-info > p{color:var(--muted);margin-bottom:28px}
+  .info-row{display:flex;gap:14px;align-items:center;margin-bottom:18px;color:var(--text);font-size:15px}
+  .info-row .i{width:42px;height:42px;border-radius:10px;background:#1c1f2b;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .info-row small{display:block;color:var(--muted);font-size:12px}
+  form{display:grid;gap:16px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  input,select,textarea{width:100%;padding:13px 15px;background:#0f1117;border:1px solid var(--line);border-radius:10px;color:var(--text);font:inherit;font-size:15px;outline:none;transition:.2s}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.18)}
+  textarea{min-height:120px;resize:vertical}
+  select option{background:#14161d}
+  .hp{position:absolute;left:-9999px}
+  #status{font-size:14px;min-height:20px}
+  #status.ok{color:#4ade80} #status.err{color:#f87171}
+  footer{padding:34px 0;text-align:center;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:70px}
+  .reveal{opacity:0;transform:translateY(24px);transition:.7s}
+  .reveal.show{opacity:1;transform:none}
+  @media(max-width:820px){
+    nav ul{display:none} section{padding:64px 0}
+    .contact-box{grid-template-columns:1fr;padding:28px}
+    .row2{grid-template-columns:1fr}
+    .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#" class="logo">Krishnan<span>.</span></a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-primary" style="padding:9px 20px;font-size:14px">Hire Me</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <span class="tag"><b>●</b> Available for freelance projects</span>
+    <h1>I build <em>high-converting</em> Shopify stores & themes</h1>
+    <p>Hi, I'm Krishnan, an ecommerce web developer from Tamil Nadu. I design and develop modern Shopify themes that help brands look premium and sell more.</p>
+    <div class="actions">
+      <a href="#work" class="btn btn-primary">View My Work</a>
+      <a href="#contact" class="btn btn-ghost">Let's Talk</a>
+    </div>
+  </div>
+</header>
+
+<!-- WORK -->
+<section id="work">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio</p>
+    <h2 class="sec-title">Shopify themes I've built</h2>
+    <p class="sec-sub">Click "Live Demo" to open the store and explore it yourself.</p>
+    <div class="grid">
+
+      <article class="card reveal">
+        <a class="thumb" href="https://electronics-hub-fartiln5.myshopify.com/" target="_blank" rel="noopener">
+          <span class="badge">Shopify Theme</span>
+          <img loading="lazy" alt="Electronics Hub Shopify store" src="https://image.thum.io/get/width/900/crop/560/https://electronics-hub-fartiln5.myshopify.com/">
+        </a>
+        <div class="body">
+          <h3>Electronics Hub</h3>
+          <p>A clean, modern Shopify theme for electronics and gadget stores with product showcase, collections and smooth checkout flow.</p>
+          <div class="meta"><span>Shopify • Liquid</span><a href="https://electronics-hub-fartiln5.myshopify.com/" target="_blank" rel="noopener">Live Demo →</a></div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <a class="thumb" href="https://kk-electrotech.myshopify.com/" target="_blank" rel="noopener">
+          <span class="badge">Shopify Theme</span>
+          <img loading="lazy" alt="KK Electrotech Shopify store" src="https://image.thum.io/get/width/900/crop/560/https://kk-electrotech.myshopify.com/">
+        </a>
+        <div class="body">
+          <h3>KK Electrotech</h3>
+          <p>A premium electronics store theme with bold banners, responsive product grids and a conversion-focused layout.</p>
+          <div class="meta"><span>Shopify • Liquid</span><a href="https://kk-electrotech.myshopify.com/" target="_blank" rel="noopener">Live Demo →</a></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="wrap">
+    <p class="eyebrow">What I do</p>
+    <h2 class="sec-title">Services</h2>
+    <p class="sec-sub">From idea to a live, selling online store.</p>
+    <div class="services">
+      <div class="svc reveal"><div class="ico">🛍️</div><h3>Ecommerce Website Creation</h3><p>Complete online store setup: design, products, payments and launch, ready to start selling.</p></div>
+      <div class="svc reveal"><div class="ico">🎨</div><h3>Shopify Theme Development</h3><p>Custom Shopify themes built from scratch or customized to match your brand perfectly.</p></div>
+    </div>
+    <div class="chips">
+      <span>Shopify</span><span>Liquid</span><span>HTML5</span><span>CSS3</span>
+      <span>JavaScript</span><span>Figma</span><span>Photoshop</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="padding-top:20px">
+  <div class="wrap">
+    <div class="contact-box reveal">
+      <div class="contact-info">
+        <p class="eyebrow">Contact</p>
+        <h2>Have a project in mind?</h2>
+        <p>Fill the form and your message reaches me by email and WhatsApp. I'll reply as soon as possible.</p>
+        <div class="info-row"><div class="i">✉️</div><div><small>Email</small><a href="mailto:krishnank281099@gmail.com">krishnank281099@gmail.com</a></div></div>
+        <div class="info-row"><div class="i">💬</div><div><small>WhatsApp</small><a id="waLink" href="#" target="_blank" rel="noopener">Chat on WhatsApp</a></div></div>
+        <div class="info-row"><div class="i">📍</div><div><small>Location</small>Tamil Nadu, India</div></div>
+      </div>
+
+      <form id="contactForm" novalidate>
+        <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off">
+        <div class="row2">
+          <div><label for="name">Your Name *</label><input id="name" name="name" required placeholder="John"></div>
+          <div><label for="phone">Phone / WhatsApp</label><input id="phone" name="phone" type="tel" placeholder="+91 98765 43210"></div>
+        </div>
+        <div><label for="email">Email *</label><input id="email" name="email" type="email" required placeholder="you@example.com"></div>
+        <div>
+          <label for="service">I need *</label>
+          <select id="service" name="service" required>
+            <option value="Ecommerce Website Creation">Ecommerce Website Creation</option>
+            <option value="Shopify Theme Development">Shopify Theme Development</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div><label for="message">Project Details *</label><textarea id="message" name="message" required placeholder="Tell me about your store, products and budget..."></textarea></div>
+        <button type="submit" class="btn btn-primary" id="sendBtn">Send Message</button>
+        <div id="status" role="status"></div>
+      </form>
+    </div>
+  </div>
+  <footer>© 2026 Krishnan. All rights reserved.</footer>
+</section>
+
+<script>
+  /* ====== SETTINGS ====== */
+  const EMAIL = "krishnank281099@gmail.com";
+  const WHATSAPP_NUMBER = "91XXXXXXXXXX"; // <-- country code + number, no + or spaces. Example: 919876543210
+  const WEB3FORMS_KEY = "2be98459-faf2-46e9-be03-57d2c768c6a5"; // <-- paste your free Web3Forms access key here (see instructions)
+  /* ====================== */
+
+  const waReady = !/X/i.test(WHATSAPP_NUMBER);
+  const waLink = document.getElementById('waLink');
+  if (waReady) waLink.href = "https://wa.me/" + WHATSAPP_NUMBER;
+  else waLink.removeAttribute('href');
+
+  const form = document.getElementById('contactForm');
+  const statusEl = document.getElementById('status');
+  const btn = document.getElementById('sendBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(form).entries());
+    if (d._honey) return;
+    if (!d.name.trim() || !d.email.trim() || !d.message.trim()) {
+      statusEl.className = 'err'; statusEl.textContent = 'Please fill name, email and project details.'; return;
+    }
+    btn.disabled = true; btn.textContent = 'Sending...'; statusEl.className = ''; statusEl.textContent = '';
+
+    // 1) Open WhatsApp with filled message (must run directly on click so it is not blocked)
+    if (waReady) {
+      const text = `Hi Krishnan, I'm ${d.name}.\nService: ${d.service}\nEmail: ${d.email}\nPhone: ${d.phone || '-'}\n\n${d.message}`;
+      window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text), "_blank");
+    }
+
+    // 2) Send email (Web3Forms if key is set, otherwise FormSubmit)
+    try {
+      let res, data;
+      if (WEB3FORMS_KEY) {
+        res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {"Content-Type": "application/json", "Accept": "application/json"},
+          body: JSON.stringify({
+            access_key: WEB3FORMS_KEY,
+            subject: "New portfolio enquiry from " + d.name,
+            from_name: "Portfolio Website",
+            name: d.name, email: d.email, phone: d.phone || '-', service: d.service, message: d.message
+          })
+        });
+      } else {
+        res = await fetch("https://formsubmit.co/ajax/" + EMAIL, {
+          method: "POST",
+          headers: {"Content-Type": "application/json", "Accept": "application/json"},
+          body: JSON.stringify({
+            name: d.name, email: d.email, phone: d.phone || '-', service: d.service, message: d.message,
+            _subject: "New portfolio enquiry from " + d.name, _template: "table", _captcha: "false"
+          })
+        });
+      }
+      data = await res.json().catch(() => ({}));
+      console.log("Mail service response:", data);
+      const ok = res.ok && (data.success === true || data.success === "true");
+      if (!ok) throw new Error(data.message || "Send failed");
+      statusEl.className = 'ok'; statusEl.textContent = '✓ Message sent! I will contact you soon.';
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      statusEl.className = 'err';
+      statusEl.innerHTML = 'Could not send email. Please write to <a href="mailto:' + EMAIL + '" style="text-decoration:underline">' + EMAIL + '</a>';
+    }
+    btn.disabled = false; btn.textContent = 'Send Message';
+  });
+
+  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('show') }), {threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
