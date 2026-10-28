@@ -838,13 +838,18 @@
     <div class="wrap">© 2026 Krishnan. All rights reserved.</div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
   <script>
     /* ====== SETTINGS ====== */
     var EMAIL = "krishnank281099@gmail.com";
-    var WEB3FORMS_KEY = "2be98459-faf2-46e9-be03-57d2c768c6a5";
+    var EMAILJS_PUBLIC_KEY = "fp7mSoTgliBfeKJZv";   // EmailJS > Account > General
+    var EMAILJS_SERVICE_ID = "service_7r657wi";   // EmailJS > Email Services
+    var EMAILJS_TEMPLATE_ID = "template_le2qufy"; // EmailJS > Email Templates
     var CLOUD_NAME = "glkwvzgi";
     var UPLOAD_PRESET = "portfolio_upload";
     /* ====================== */
+
+    if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
     if (!CLOUD_NAME || !UPLOAD_PRESET) document.getElementById('fileWrap').style.display = 'none';
 
@@ -864,18 +869,22 @@
     var btn = document.getElementById('sendBtn');
 
     async function sendMail(subject, d, message) {
-      var res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
+      if (typeof emailjs === 'undefined') throw new Error('EmailJS library not loaded');
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
           subject: subject,
-          from_name: "Support Website",
-          name: d.name, email: d.email, phone: d.phone || '-', topic: d.topic, message: message
-        })
-      });
-      var data = await res.json().catch(function () { return {}; });
-      if (!(res.ok && (data.success === true || data.success === "true"))) throw new Error(data.message || "Send failed");
+          from_name: d.name,
+          from_email: d.email,
+          reply_to: d.email,
+          phone: d.phone || '-',
+          topic: d.topic,
+          message: message
+        });
+      } catch (err) {
+        // EmailJS rejects with {status, text}
+        console.error('EmailJS error:', err);
+        throw new Error((err && err.text) || (err && err.message) || 'Send failed');
+      }
     }
 
     var hideTimer = null;
