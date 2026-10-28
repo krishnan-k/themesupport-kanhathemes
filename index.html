@@ -840,117 +840,158 @@
     <div class="wrap">© 2026 Krishnan. All rights reserved.</div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
     /* ====== SETTINGS ====== */
     var EMAIL = "krishnank281099@gmail.com";
-    var EMAILJS_PUBLIC_KEY = "6ulDWaAgUcJBwkqPO";   // EmailJS > Account > General
-    var EMAILJS_SERVICE_ID = "service_ors7zuf";   // EmailJS > Email Services
-    var EMAILJS_TEMPLATE_ID = "template_kghqe3s"; // EmailJS > Email Templates
+    var EMAILJS_PUBLIC_KEY = "6ulDWaAgUcJBwkqPO";
+    var EMAILJS_SERVICE_ID = "service_ors7zuf";
+    var EMAILJS_TEMPLATE_ID = "template_kghqe3s";
     var CLOUD_NAME = "glkwvzgi";
     var UPLOAD_PRESET = "portfolio_upload";
     /* ====================== */
 
-    if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
-    if (!CLOUD_NAME || !UPLOAD_PRESET) document.getElementById('fileWrap').style.display = 'none';
-
-    async function uploadFile(f) {
-      var type = f.type.indexOf('video') === 0 ? 'video' : 'image';
-      var fd = new FormData();
-      fd.append('file', f);
-      fd.append('upload_preset', UPLOAD_PRESET);
-      var r = await fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/' + type + '/upload', { method: 'POST', body: fd });
-      var j = await r.json().catch(function () { return {}; });
-      if (!r.ok || !j.secure_url) throw new Error((j.error && j.error.message) || 'Upload failed');
-      return j.secure_url;
-    }
-
     var form = document.getElementById('contactForm');
     var statusEl = document.getElementById('status');
     var btn = document.getElementById('sendBtn');
-
-    async function sendMail(subject, d, message) {
-      if (typeof emailjs === 'undefined') throw new Error('EmailJS library not loaded');
-      try {
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-          subject: subject,
-          from_name: d.name,
-          from_email: d.email,
-          reply_to: d.email,
-          phone: d.phone || '-',
-          topic: d.topic,
-          message: message
-        });
-      } catch (err) {
-        // EmailJS rejects with {status, text}
-        console.error('EmailJS error:', err);
-        throw new Error((err && err.status ? err.status + ': ' : '') + ((err && err.text) || (err && err.message) || 'Send failed'));
-      }
-    }
-
     var hideTimer = null;
-    function showStatus(cls, html, hideAfterMs) {
+
+    function showStatus(cls, message, hideAfterMs) {
+      if (!statusEl) return;
       clearTimeout(hideTimer);
-      statusEl.className = cls; statusEl.innerHTML = html;
-      if (hideAfterMs) hideTimer = setTimeout(function () { statusEl.className = ''; statusEl.innerHTML = ''; }, hideAfterMs);
+      statusEl.className = cls || '';
+      statusEl.textContent = message || '';
+      if (hideAfterMs) hideTimer = setTimeout(function () {
+        statusEl.className = '';
+        statusEl.textContent = '';
+      }, hideAfterMs);
     }
-    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
 
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var d = Object.fromEntries(new FormData(form).entries());
-      if (d._honey) return;
-      if (!d.name.trim() || !d.email.trim() || !d.message.trim()) {
-        showStatus('err', 'Please fill name, email and message.', 5000); return;
+    // Initialize only after the EmailJS CDN has loaded.
+    function emailJsReady() {
+      if (!window.emailjs || typeof window.emailjs.send !== 'function') {
+        throw new Error('Email service did not load. Please refresh the page and try again.');
       }
+      window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    }
 
-      // Validate attachments first (instant)
-      var files = Array.from(document.getElementById('files').files || []);
+    if (!CLOUD_NAME || !UPLOAD_PRESET) {
+      var fileWrap = document.getElementById('fileWrap');
+      if (fileWrap) fileWrap.style.display = 'none';
+    }
+
+    async function uploadFile(file) {
+      var type = file.type.indexOf('video') === 0 ? 'video' : 'image';
+      var fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', UPLOAD_PRESET);
+      var response = await fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/' + type + '/upload', {
+        method: 'POST', body: fd
+      });
+      var data = await response.json().catch(function () { return {}; });
+      if (!response.ok || !data.secure_url) {
+        throw new Error((data.error && data.error.message) || 'File upload failed.');
+      }
+      return data.secure_url;
+    }
+
+    async function sendMail(subject, data, message) {
+      emailJsReady();
       try {
-        if (files.length > 5) throw new Error('Please attach a maximum of 5 files.');
-        files.forEach(function (f) {
-          var isVideo = f.type.indexOf('video') === 0;
-          if (!isVideo && f.type.indexOf('image') !== 0) throw new Error('Only images and videos are allowed.');
-          if (f.size > (isVideo ? 100 : 10) * 1024 * 1024) throw new Error(f.name + ' is too large (images max 10MB, videos max 100MB).');
-        });
-      } catch (err) {
-        showStatus('err', esc(err.message), 6000); return;
+        return await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          subject: subject,
+          from_name: data.name,
+          from_email: data.email,
+          reply_to: data.email,
+          phone: data.phone || '-',
+          topic: data.topic || 'Other',
+          message: message
+        }, { publicKey: EMAILJS_PUBLIC_KEY });
+      } catch (error) {
+        console.error('EmailJS send failed:', error);
+        var detail = error && (error.text || error.message);
+        throw new Error((error && error.status ? error.status + ': ' : '') + (detail || 'Email could not be sent.'));
       }
+    }
 
-      btn.disabled = true; btn.textContent = 'Sending...'; showStatus('', '');
+    if (form) {
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        if (btn && btn.disabled) return;
 
-      // 1) Send the main email IMMEDIATELY (no waiting for uploads), and start uploads in parallel
-      var mailPromise = sendMail("New support enquiry from " + d.name, d, d.message);
-      var uploadsPromise = files.length ? Promise.all(files.map(uploadFile)) : Promise.resolve([]);
-
-      uploadsPromise.catch(function () { });
-      var mailOk = true;
-      try {
-        await mailPromise;
-        showStatus('ok', '✓ Message sent! We will contact you soon.', files.length ? 0 : 5000);
-      } catch (err) {
-        mailOk = false;
-        console.error(err);
-        showStatus('err', 'Could not send email (' + esc(err.message) + '). Please write to <a href="mailto:' + EMAIL + '" style="text-decoration:underline">' + EMAIL + '</a>', 20000);
-      }
-
-      // 2) Attachments: finish uploads, then send the links in a quick follow-up email
-      if (files.length) {
-        if (mailOk) showStatus('', '✓ Message sent! Uploading your files...');
-        try {
-          var links = await uploadsPromise;
-          await sendMail("Attachments from " + d.name, d, "Attachments for the enquiry above:\n" + links.join("\n"));
-          if (mailOk) showStatus('ok', '✓ Message and files sent! We will contact you soon.', 5000);
-        } catch (err) {
-          console.error(err);
-          showStatus('err', (mailOk ? 'Message sent, but ' : '') + 'file upload failed: ' + esc(err.message), 8000);
+        var formData = new FormData(form);
+        var data = {
+          name: String(formData.get('name') || '').trim(),
+          email: String(formData.get('email') || '').trim(),
+          phone: String(formData.get('phone') || '').trim(),
+          topic: String(formData.get('topic') || 'Other').trim(),
+          message: String(formData.get('message') || '').trim()
+        };
+        // Honeypot anti-spam field, if present.
+        if (String(formData.get('_honey') || '').trim()) return;
+        if (!data.name || !data.email || !data.message) {
+          showStatus('err', 'Please fill in your name, email and message.', 6000);
+          return;
         }
-      }
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(data.email)) {
+          showStatus('err', 'Please enter a valid email address.', 6000);
+          return;
+        }
 
-      if (mailOk) form.reset();
-      btn.disabled = false; btn.textContent = 'Send message';
-    });
+        var fileInput = document.getElementById('files');
+        var files = fileInput ? Array.from(fileInput.files || []) : [];
+        try {
+          if (files.length > 5) throw new Error('Please attach a maximum of 5 files.');
+          files.forEach(function (file) {
+            var video = file.type.indexOf('video/') === 0;
+            var image = file.type.indexOf('image/') === 0;
+            if (!video && !image) throw new Error('Only image and video files are allowed.');
+            if (file.size > (video ? 100 : 10) * 1024 * 1024) {
+              throw new Error(file.name + ' is too large (images max 10MB, videos max 100MB).');
+            }
+          });
+        } catch (error) {
+          showStatus('err', error.message, 7000);
+          return;
+        }
+
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+        showStatus('', 'Sending your message...');
+        var mailSent = false;
+        try {
+          // Send the support request first so file uploads cannot block the email.
+          await sendMail('New support enquiry from ' + data.name, data, data.message);
+          mailSent = true;
+          if (files.length) showStatus('ok', 'Message sent. Uploading attached files...');
+          else showStatus('ok', 'Message sent! We will contact you soon.', 6000);
+        } catch (error) {
+          console.error(error);
+          showStatus('err', 'Could not send email: ' + error.message + ' Please try again or email ' + EMAIL + '.', 20000);
+        }
+
+        if (files.length && mailSent) {
+          try {
+            var links = await Promise.all(files.map(uploadFile));
+            await sendMail('Attachments from ' + data.name, data,
+              'Attachments for the support enquiry above:\n' + links.join('\n'));
+            showStatus('ok', 'Message and files sent! We will contact you soon.', 6000);
+          } catch (error) {
+            console.error('Attachment upload/send failed:', error);
+            showStatus('err', 'Your message was sent, but the files could not be sent: ' + error.message, 12000);
+          }
+        }
+        if (mailSent) form.reset();
+        if (btn) { btn.disabled = false; btn.textContent = 'Send message'; }
+      });
+    } else {
+      console.error('Contact form #contactForm was not found on this page.');
+    }
   </script>
 </body>
 
