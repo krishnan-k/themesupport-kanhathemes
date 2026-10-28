@@ -714,7 +714,8 @@
         <p>Pick the option that fits you best.</p>
       </div>
       <div class="cards">
-        <a class="card" href="https://kanhathemes.gitbook.io/electronics-hub-theme-docs/" target="_blank" style="display:block;text-decoration:none">
+        <a class="card" href="https://kanhathemes.gitbook.io/electronics-hub-theme-docs/" target="_blank"
+          rel="noopener noreferrer" style="display:block;text-decoration:none">
           <div class="ico">📘</div>
           <h3>Documentation</h3>
           <p>Step-by-step install, demo import, and customization guides.</p>
@@ -948,15 +949,6 @@
 
       if (mailOk) form.reset();
       btn.disabled = false; btn.textContent = 'Send message';
-    });
-
-    // Documentation links always open in a new tab (also inside previews that ignore target="_blank")
-    document.querySelectorAll('a[data-newtab]').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        e.preventDefault();
-        var w = window.open(a.href, '_blank', 'noopener');
-        if (!w) window.location.href = a.href;   // popup blocked: open here instead
-      });
     });
   </script>
 </body>
