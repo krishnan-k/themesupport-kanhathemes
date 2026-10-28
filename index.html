@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Theme Support</title>
+  <title>Support Center | Krishnan</title>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet">
   <style>
@@ -885,7 +885,7 @@
       } catch (err) {
         // EmailJS rejects with {status, text}
         console.error('EmailJS error:', err);
-        throw new Error((err && err.text) || (err && err.message) || 'Send failed');
+        throw new Error((err && err.status ? err.status + ': ' : '') + ((err && err.text) || (err && err.message) || 'Send failed'));
       }
     }
 
@@ -924,6 +924,7 @@
       var mailPromise = sendMail("New support enquiry from " + d.name, d, d.message);
       var uploadsPromise = files.length ? Promise.all(files.map(uploadFile)) : Promise.resolve([]);
 
+      uploadsPromise.catch(function () { });
       var mailOk = true;
       try {
         await mailPromise;
@@ -931,7 +932,7 @@
       } catch (err) {
         mailOk = false;
         console.error(err);
-        showStatus('err', 'Could not send email. Please write to <a href="mailto:' + EMAIL + '" style="text-decoration:underline">' + EMAIL + '</a>', 10000);
+        showStatus('err', 'Could not send email (' + esc(err.message) + '). Please write to <a href="mailto:' + EMAIL + '" style="text-decoration:underline">' + EMAIL + '</a>', 20000);
       }
 
       // 2) Attachments: finish uploads, then send the links in a quick follow-up email
