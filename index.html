@@ -871,7 +871,7 @@
           <p>Fill the form and your message reaches us by email. Please include your store link so we can check quickly.
           </p>
           <ul>
-            <li>✉️ <a href="mailto:krishnank281099@gmail.com">krishnank281099@gmail.com</a></li>
+            <li>✉️ <a href="mailto:supportkanhathemes@gmail.com">supportkanhathemes@gmail.com</a></li>
             <li>📍 Tamil Nadu, India</li>
             <li>🕘 Mon–Sat, 10am–6pm IST</li>
             <li>⚡ Replies within 24 hours</li>
@@ -915,10 +915,10 @@
 
   <script>
     /* ====== SETTINGS ====== */
-    var EMAIL = "krishnank281099@gmail.com";
-    var EMAILJS_PUBLIC_KEY = "6ulDWaAgUcJBwkqPO";
-    var EMAILJS_SERVICE_ID = "service_ors7zuf";
-    var EMAILJS_TEMPLATE_ID = "template_kghqe3s";
+    var EMAIL = "supportkanhathemes@gmail.com";            // receive mail (fallback message ku)
+    var EMAILJS_PUBLIC_KEY  = "E1Q06BD95KVGOIAIZ";
+    var EMAILJS_SERVICE_ID  = "service_genichi";
+    var EMAILJS_TEMPLATE_ID = "template_0jp1o9k";
     var CLOUD_NAME = "glkwvzgi";
     var UPLOAD_PRESET = "portfolio_upload";
     var MAX_FILES = 5, MAX_IMG_MB = 10, MAX_VID_MB = 100;
@@ -1057,7 +1057,7 @@
     if (fileInput) {
       fileInput.addEventListener('change', function () {
         var chosen = Array.from(fileInput.files || []);
-        fileInput.value = '';                 // allows picking the same file again later
+        fileInput.value = '';
         var problems = [];
         chosen.forEach(function (file) {
           if (items.length >= MAX_FILES) { problems.push('Maximum ' + MAX_FILES + ' files allowed.'); return; }
@@ -1072,7 +1072,7 @@
       });
     }
 
-    /* ---------- Email: EmailJS REST API (no CDN script needed) ---------- */
+    /* ---------- Email: EmailJS REST API (local + live both work) ---------- */
     async function sendMail(data, message) {
       var controller = new AbortController();
       var timer = setTimeout(function () { controller.abort(); }, 30000);
@@ -1086,9 +1086,12 @@
             template_id: EMAILJS_TEMPLATE_ID,
             user_id: EMAILJS_PUBLIC_KEY,
             template_params: {
+              to_email: EMAIL,
               subject: 'New support enquiry from ' + data.name,
               from_name: data.name,
+              name: data.name,
               from_email: data.email,
+              email: data.email,
               reply_to: data.email,
               phone: data.phone || '-',
               topic: data.topic || 'Other',
@@ -1098,7 +1101,12 @@
         });
         var text = await res.text();
         log('EmailJS response', res.status, text);
-        if (!res.ok) throw new Error(res.status + ': ' + (text || 'Email could not be sent.'));
+        if (!res.ok) {
+          var hint = '';
+          if (res.status === 403) hint = ' (EmailJS Dashboard → Account → Security la domain / origin block aagirukkalaam)';
+          if (res.status === 400) hint = ' (Service ID / Template ID / Public Key check pannunga)';
+          throw new Error(res.status + ': ' + (text || 'Email could not be sent.') + hint);
+        }
         return text;
       } catch (err) {
         if (err.name === 'AbortError') throw new Error('Request timed out. Please try again.');
